@@ -1,35 +1,33 @@
-## Neo4J dependency: dockerfile/java
-## get java from trusted build
-from dockerfile/java
-maintainer Tiago Pires, tandrepires@gmail.com
+# Container with Neo4j 2.2
+# Repository http://github.com/jexp/docker-neo4j-2.2
 
-## install neo4j according to http://www.neo4j.org/download/linux
-# Import neo4j signing key
-# Create an apt sources.list file
-# Find out about the files in neo4j repo ; install neo4j community edition
+FROM dockerfile/java:oracle-java8
+MAINTAINER Michael Hunger, michael.hunger@neotechnology.com
 
-run wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
-    echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list && \
-    apt-get update ; apt-get install neo4j -y
+# Install latest Neo4j _Milestone_ according to http://debian.neo4j.org
+
+RUN curl http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
+    echo 'deb http://debian.neo4j.org/repo testing/' > /etc/apt/sources.list.d/neo4j.list && \
+    apt-get update && \
+    apt-get install neo4j -y && \
+    apt-get clean
 
 ## add launcher and set execute property
-## clean sources
-## turn on indexing: http://chrislarson.me/blog/install-neo4j-graph-database-ubuntu
-## enable neo4j indexing, and set indexable keys to name,age
 # enable shell server on all network interfaces
+# change data directory to /opt/data/graph.db for external linking
 
-add launch.sh /
-run chmod +x /launch.sh && \
-    apt-get clean && \
-    sed -i "s|#node_auto_indexing|node_auto_indexing|g" /var/lib/neo4j/conf/neo4j.properties && \
-    sed -i "s|#node_keys_indexable|node_keys_indexable|g" /var/lib/neo4j/conf/neo4j.properties && \ 
+ADD launch.sh /
+
+RUN chmod +x /launch.sh && \
+    sed -i "s|remote_shell_enabled=.+|remote_shell_enabled=true|g" /var/lib/neo4j/conf/neo4j.properties && \
+    sed -i "s|data/graph.db|/opt/data/graph.db|g" /var/lib/neo4j/conf/neo4j-server.properties && \
     echo "remote_shell_host=0.0.0.0" >> /var/lib/neo4j/conf/neo4j.properties
 
-# expose REST and shell server ports
-expose 7474
-expose 1337
+# expose REST-server and remote-shell ports
+EXPOSE 7474
+EXPOSE 1337
 
-workdir /
+WORKDIR /etc/neo4j
 
-## entrypoint
-cmd ["/bin/bash", "-c", "/launch.sh"]
+## Run start script
+CMD ["/bin/bash", "-c", "/launch.sh"]
