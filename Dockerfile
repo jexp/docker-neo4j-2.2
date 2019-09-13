@@ -2,7 +2,7 @@
 # Repository http://github.com/jexp/docker-neo4j-2.2
 
 FROM openjdk:8
-MAINTAINER Michael Hunger, michael.hunger@neotechnology.com
+LABEL maintainer="Michael Hunger, michael.hunger@neotechnology.com"
 
 # Install latest Neo4j _Milestone_ according to http://debian.neo4j.org
 
