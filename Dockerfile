@@ -27,6 +27,7 @@ RUN chmod +x /launch.sh && \
 
 # expose REST-server and remote-shell ports
 EXPOSE 7474
+EXPOSE 7687
 EXPOSE 1337
 
 WORKDIR /etc/neo4j
