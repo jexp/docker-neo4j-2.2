@@ -3,7 +3,7 @@ timestamps {
 ansiColor('xterm') {
 
 node('docker') {
-    settingVars version: "2.2"
+    settingVars version: "3.5.12"
     stage('Build Docker Image ') {
                     buildDocker()
     }

@@ -1,33 +1,18 @@
-Container for Neo4j 2.2
-=======================
+## Neo4j
 
-Neo4j is an highly scalable, robust (fully ACID) native graph database. 
-It is used in mission-critical apps by thousands of leading, startups, enterprises, and governments around the world.
+Using official Neo4j image with authentication disabled.  
+This is needed for Profound 3.8, also shouldn't break anything on elarier versions either.  
+Also note need BOLT port 7687 mapped too.
+Since we snt use much resources, the following should suffice, just remeber to map data directories.  
 
-Learn more on http://neo4j.com and get started with http://neo4j.com/developer
+docker run \
+    --name om-neo4j \
+    -p7474:7474 -p7687:7687 \
+    -d \
+    -v $HOME/neo4j/data:/data \
+    -v $HOME/neo4j/logs:/logs \
+    dc-neo4j:latest
 
-This Dockerfile creates a Neo4j 2.2 (Milestone) container that is ready to run and can link to your external data directories.
+Note: Default other services look for om-neo4j as service name.
 
-### Setup
-
-1. Run:
-
-	`docker run -i -t -d --name neo4j-22 -v </path/to/neo4j/data-dir>:/opt/data -p <external port>:7474 jexp/docker-neo4j-2.2`
-
-e.g.:
-
-    `docker run -i -t -d --name neo4j-22 -v /home/michael/neo4j/data:/opt/data -p 17474:7474 jexp/docker-neo4j-2.2`
-
-2. Open in browser
-
-     `http://localhost:17474` 
-
-Please note that Neo4j 2.2 requires auth.
-You have to login with `neo4j/neo4j` at the first connection and set a new password.
-
-Todo
-====
-
-* Provide initial password externally
-* Allow to disable auth via environment variable
-* Memory Tuning Options (esp. page-cache)
+See https://neo4j.com/developer/docker-run-neo4j/ for more deatils on running.
